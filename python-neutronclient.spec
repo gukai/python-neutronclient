@@ -1,6 +1,6 @@
 Name:       python-neutronclient
-Version:    2.3.4
-Release:    1%{?dist}
+Version:    2.3.9
+Release:    2%{?dist}
 Summary:    Python API and CLI for OpenStack Neutron
 
 Group:      Development/Languages
@@ -8,9 +8,6 @@ License:    ASL 2.0
 URL:        http://launchpad.net/python-neutronclient/
 Source0:    https://pypi.python.org/packages/source/p/%{name}/%{name}-%{version}.tar.gz
 
-#
-# patches_base=2.3.4
-#
 #Patch0001: 0001-Remove-runtime-dependency-on-python-pbr.patch
 
 BuildArch:  noarch
@@ -21,9 +18,10 @@ BuildRequires: python-pbr
 BuildRequires: python-d2to1
 
 Requires: pyparsing
-Requires: python-httplib2
 Requires: python-cliff >= 1.0
+Requires: python-keystoneclient >= 0.9.0
 Requires: python-prettytable >= 0.6
+Requires: python-requests
 Requires: python-setuptools
 Requires: python-simplejson
 
@@ -49,9 +47,8 @@ rm -f test-requirements.txt requirements.txt
 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
 
 # Install other needed files
-# rhbz 888939#c7: bash-completion is not in RHEL
 install -p -D -m 644 tools/neutron.bash_completion \
-    %{buildroot}%{_sysconfdir}/profile.d/neutron.sh
+    %{buildroot}%{_sysconfdir}/bash_completion.d/neutron.bash_completion
 
 # Remove unused files
 rm -rf %{buildroot}%{python_sitelib}/neutronclient/tests
@@ -62,9 +59,22 @@ rm -rf %{buildroot}%{python_sitelib}/neutronclient/tests
 %{_bindir}/neutron
 %{python_sitelib}/neutronclient
 %{python_sitelib}/*.egg-info
-%{_sysconfdir}/profile.d/neutron.sh
+%{_sysconfdir}/bash_completion.d
 
 %changelog
+* Mon Oct 13 2014 Jakub Ruzicka <jruzicka@redhat.com> 2.3.9-1
+- Update to upstream 2.3.9
+
+* Thu Aug 21 2014 Jakub Ruzicka <jruzicka@redhat.com> 2.3.6-2
+- Fix listing security group rules
+
+* Mon Aug 04 2014 Jakub Ruzicka <jruzicka@redhat.com> 2.3.6-1
+- Update to upstream 2.3.6
+- New requirements: python-requests, python-keystoneclient
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Tue Feb 25 2014 Jakub Ruzicka <jruzicka@redhat.com> 2.3.4-1
 - Update to upstream 2.3.4
 
@@ -83,8 +93,11 @@ rm -rf %{buildroot}%{python_sitelib}/neutronclient/tests
 * Wed Aug 28 2013 Jakub Ruzicka <jruzicka@redhat.com> - 2.2.6-2
 - Remove all pbr deps in the patch instead of this spec file.
 
-* Tue Aug 27 2013 Jakub Ruzicka <jruzicka@redhat.com> - 2.2.6-1
+* Wed Aug 21 2013 Jakub Ruzicka <jruzicka@redhat.com> - 2.2.6-1
 - Update to upstream 2.2.6.
+
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.2.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
 * Tue Jul 23 2013 Jakub Ruzicka <jruzicka@redhat.com> - 1:2.2.4-1
 - Initial package based on python-quantumclient.
